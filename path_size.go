@@ -7,10 +7,6 @@ import (
 	"strings"
 )
 
-// GetPathSize возвращает размер файла или директории
-// recursive — считать вложенные директории
-// human — форматировать размер человекочитаемо
-// all — учитывать скрытые файлы и папки
 func GetPathSize(path string, recursive, human, all bool) (string, error) {
 	info, err := os.Lstat(path)
 	if err != nil {
@@ -55,9 +51,12 @@ func GetPathSize(path string, recursive, human, all bool) (string, error) {
 	return FormatSize(total, human), nil
 }
 
-// FormatSize форматирует размер в человекочитаемый вид, если human == true
 func FormatSize(size int64, human bool) string {
 	if !human {
+		return fmt.Sprintf("%dB", size)
+	}
+
+	if size < 1024 {
 		return fmt.Sprintf("%dB", size)
 	}
 
@@ -68,5 +67,6 @@ func FormatSize(size int64, human bool) string {
 		s /= 1024
 		i++
 	}
+
 	return fmt.Sprintf("%.1f%s", s, units[i])
 }
