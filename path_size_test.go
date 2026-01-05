@@ -11,7 +11,8 @@ import (
 func TestGetPathSize_File(t *testing.T) {
 	tmpDir := t.TempDir()
 	file := filepath.Join(tmpDir, "file.txt")
-	os.WriteFile(file, []byte("1234"), 0644) // 4B
+	err := os.WriteFile(file, []byte("1234"), 0644) // 4B
+	require.NoError(t, err)
 
 	size, err := GetPathSize(file, false, false, false)
 	require.NoError(t, err)
@@ -20,8 +21,10 @@ func TestGetPathSize_File(t *testing.T) {
 
 func TestGetPathSize_Dir(t *testing.T) {
 	tmpDir := t.TempDir()
-	os.WriteFile(filepath.Join(tmpDir, "file1.txt"), []byte("1234"), 0644)    // 4B
-	os.WriteFile(filepath.Join(tmpDir, "file2.txt"), []byte("1234567"), 0644) // 7B
+	err := os.WriteFile(filepath.Join(tmpDir, "file1.txt"), []byte("1234"), 0644) // 4B
+	require.NoError(t, err)
+	err = os.WriteFile(filepath.Join(tmpDir, "file2.txt"), []byte("1234567"), 0644) // 7B
+	require.NoError(t, err)
 
 	size, err := GetPathSize(tmpDir, false, false, false)
 	require.NoError(t, err)
@@ -31,8 +34,10 @@ func TestGetPathSize_Dir(t *testing.T) {
 func TestGetPathSize_EmptyDir(t *testing.T) {
 	tmpDir := t.TempDir()
 	subDir := filepath.Join(tmpDir, "dir1")
-	os.Mkdir(subDir, 0755)
-	os.WriteFile(filepath.Join(subDir, "a.txt"), []byte("123"), 0644) // 3B
+	err := os.Mkdir(subDir, 0755)
+	require.NoError(t, err)
+	err = os.WriteFile(filepath.Join(subDir, "a.txt"), []byte("123"), 0644) // 3B
+	require.NoError(t, err)
 
 	size, err := GetPathSize(subDir, false, false, false)
 	require.NoError(t, err)
@@ -41,8 +46,10 @@ func TestGetPathSize_EmptyDir(t *testing.T) {
 
 func TestGetPathSize_HiddenFiles(t *testing.T) {
 	tmpDir := t.TempDir()
-	os.WriteFile(filepath.Join(tmpDir, "a.txt"), []byte("123"), 0644)
-	os.WriteFile(filepath.Join(tmpDir, ".hidden.txt"), []byte("4567"), 0644)
+	err := os.WriteFile(filepath.Join(tmpDir, "a.txt"), []byte("123"), 0644)
+	require.NoError(t, err)
+	err = os.WriteFile(filepath.Join(tmpDir, ".hidden.txt"), []byte("4567"), 0644)
+	require.NoError(t, err)
 
 	size, err := GetPathSize(tmpDir, false, false, false)
 	require.NoError(t, err)
@@ -55,8 +62,10 @@ func TestGetPathSize_HiddenFiles(t *testing.T) {
 
 func TestGetPathSize_HumanReadable(t *testing.T) {
 	tmpDir := t.TempDir()
-	os.WriteFile(filepath.Join(tmpDir, "file1.txt"), []byte("1234"), 0644)    // 4B
-	os.WriteFile(filepath.Join(tmpDir, "file2.txt"), []byte("1234567"), 0644) // 7B
+	err := os.WriteFile(filepath.Join(tmpDir, "file1.txt"), []byte("1234"), 0644) // 4B
+	require.NoError(t, err)
+	err = os.WriteFile(filepath.Join(tmpDir, "file2.txt"), []byte("1234567"), 0644) // 7B
+	require.NoError(t, err)
 
 	size, err := GetPathSize(tmpDir, false, true, false)
 	require.NoError(t, err)
@@ -65,10 +74,13 @@ func TestGetPathSize_HumanReadable(t *testing.T) {
 
 func TestGetPathSize_Recursive(t *testing.T) {
 	tmpDir := t.TempDir()
-	os.WriteFile(filepath.Join(tmpDir, "file1.txt"), []byte("123"), 0644)
+	err := os.WriteFile(filepath.Join(tmpDir, "file1.txt"), []byte("123"), 0644)
+	require.NoError(t, err)
 	subDir := filepath.Join(tmpDir, "dir1")
-	os.Mkdir(subDir, 0755)
-	os.WriteFile(filepath.Join(subDir, "file2.txt"), []byte("1234"), 0644)
+	err = os.Mkdir(subDir, 0755)
+	require.NoError(t, err)
+	err = os.WriteFile(filepath.Join(subDir, "file2.txt"), []byte("1234"), 0644)
+	require.NoError(t, err)
 
 	size, err := GetPathSize(tmpDir, true, false, false)
 	require.NoError(t, err)
