@@ -36,8 +36,12 @@ func GetPathSize(path string, recursive, human, all bool) (string, error) {
 			if err != nil {
 				return "", err
 			}
+
 			var subSize int64
-			fmt.Sscanf(subSizeStr, "%dB", &subSize)
+			_, err = fmt.Sscanf(subSizeStr, "%dB", &subSize)
+			if err != nil {
+				return "", err
+			}
 			total += subSize
 		} else if !entry.IsDir() {
 			info, err := entry.Info()
